@@ -2,28 +2,24 @@
 #ifndef DISPLAY_HPP
 #define DISPLAY_HPP
 
-# include "IDisplay.hpp"
-
-// put these in IDisplay
-typedef IDisplay* (*st_create)(const Snake&);
-typedef void (*st_destroy)(IDisplay*);
+#include "../IDisplay.hpp"
 
 class Display : public IDisplay
 {
-    const Snake* snakeref;
+    SnakeGame& snakeref;
 
 public:
+    Display(SnakeGame& s);
     Display(void);
     Display(Display const &);
     Display &  operator=(Display const &);
-    Display(const Snake &);
     ~Display(void);
 
     void    tick(void);
 };
 
-extern "C" IDisplay* displayCreate(const Snake &);
-extern "C" void displayDestroy(IDisplay *);
+extern "C" IDisplay* createLink(SnakeGame &);
+extern "C" void destroyLink(IDisplay *);
 
 #endif
 
