@@ -11,20 +11,20 @@ typedef void (*st_destroy)(IDisplay*);
 
 class Display : public IDisplay
 {
-    const Snake* snakeref;
+    const Snake &       _snake;
 
-public:
     Display(void);
     Display(Display const &);
     Display &  operator=(Display const &);
+public:
     Display(const Snake &);
     ~Display(void);
 
-    void    tick(void);
+    void    update(void);
 };
 
-extern "C" IDisplay* displayCreate(const Snake &);
-extern "C" void displayDestroy(IDisplay *);
+extern "C" IDisplay* windowCreate(const Snake &);
+extern "C" void windowDestroy(IDisplay *);
 
 #endif
 

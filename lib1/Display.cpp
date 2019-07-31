@@ -1,13 +1,14 @@
 
-#include <iostream>
+# include <iostream>
 #include "Display.hpp"
+#include "SDrawer.hpp"
 
 extern "C" {
     #include <curses.h>
     #include <unistd.h>
 }
 
-Display::Display(const Snake & s) : snakeref(s)
+Display::Display(const Snake & s) : _snake(s)
 {
     initscr();
     cbreak();
@@ -49,13 +50,29 @@ void Display::tick(void)
 
 
     y = 0;
-    while (y < snakeref->height)
+    while (y < _snake.level->height)
     {
         printw("   ");
         x = 0;
-        while (x < snakeref->width)
+        while (x < _snake.level->width)
         {
-            // print map
+            switch (_snake.level->map[y][x])
+            {
+                case BLOCK_NONE:
+                    printw(" ");
+                    break;
+                case BLOCK_WALL:
+                    printw("/");
+                    break;
+                case BLOCK_NOM:
+                    printw("x");
+                    break;
+                case BLOCK_HEAD:
+                    printw("O");
+                    break;
+                default:
+                    printw("o");
+            }
             printw(" ");
             x++;
         }
