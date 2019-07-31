@@ -1,11 +1,10 @@
 
 #include "SnakeGame.hpp"
 
-SnakeGame::SnakeGame(int argc, char const *argv[]) {
-    
+SnakeGame::loadLib(std::string lib) {
 
     // load the library
-    dl_handle = dlopen(lib1, RTLD_LAZY);
+    dl_handle = dlopen(lib, RTLD_LAZY);
     // dl_handle = dlopen("./hello.so", RTLD_LAZY);
     if (!dl_handle) {
         std::cerr << "Cannot open library: " << dlerror() << '\n';
@@ -14,7 +13,7 @@ SnakeGame::SnakeGame(int argc, char const *argv[]) {
     // reset errors
     dlerror();
     
-    // load the symbol from the library and tie to this object
+    // load the creation and destruction symbols
     create = (st_create) dlsym(dl_handle, "displayCreate");
     destroy = (st_destroy) dlsym(dl_handle, "displayDestroy");
     const char *dlsym_error = dlerror();
@@ -23,20 +22,42 @@ SnakeGame::SnakeGame(int argc, char const *argv[]) {
         dlclose(dl_handle);
         return 1;
     }
-    // use it to do the calculation
-    std::cout << "Calling hello...\n";
     display = create(this);
+}
 
-    // initialize game map here
+SnakeGame::closeLib() {
+    // free old display resources
+    destroy(display);
+    // unlink and close lib
+    dlclose(dl_handle);
+}
 
+SnakeGame::switchLib(std::string lib) {
+    closeLib();
+    loadLib(lib);
+}
+
+SnakeGame::SnakeGame(int argc, char const *argv[]) {
+    
+    loadLib(lib1);
 
     while (1) {
-        display->tick(); // display and get inital key input
-        
+
+         // display and get inital key input
+        display->tick();
+
         // handle switching to new library, close previous here
+        if (someKey1) {
+            switchLib(lib1);
+        } else if (someKey2) {
+            switchLib(lib2);
+        } else if (someKey3) {
+            switchLib(lib3);
+        }
+
+        // handle input and update game here
+        
 
     }
-    // close the library
-    std::cout << "Closing library...\n";
-    dlclose(dl_handle);
+    closeLib();
 }

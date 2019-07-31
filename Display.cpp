@@ -31,29 +31,23 @@ void Display::tick(void)
 
     while ((ch = getch()) != -1)
     {
-        if (ch == 112)
-            glib_action = PAUSE;
-        if (ch == 258)
-            glib_action = DOWN;
-        if (ch == 259)
-            glib_action = UP;
-        if (ch == 260)
-            glib_action = RIGHT;
-        if (ch == 261)
-            glib_action = LEFT;
-        if (ch == 50)
-            glib_action = LIB2;
-        if (ch == 51)
-            glib_action = LIB3;
+        if (ch == 112) key = 0;
+        if (ch == 258) key = 4;
+        if (ch == 259) key = 5;
+        if (ch == 260) key = 6;
+        if (ch == 261) key = 7;
+        if (ch == 50) key = 1;
+        if (ch == 51) key = 2;
+        if (ch == 51) key = 3;
     }
 
 
     y = 0;
-    while (y < snakeref->height)
+    while (y < snakeref->getHeight())
     {
         printw("   ");
         x = 0;
-        while (x < snakeref->width)
+        while (x < snakeref->getWidth())
         {
             // print map
             printw(" ");

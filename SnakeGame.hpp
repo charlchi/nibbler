@@ -11,6 +11,7 @@ class SnakeGame
 	int height;
 	int** map;
 	int dir;
+	int key;
 
     std::string lib1;
     std::string lib2;
@@ -20,8 +21,11 @@ class SnakeGame
 	st_create create;
 	st_destroy destroy;
 
-	Display* display;
+	IDisplay* display;
 
+	loadLib(std::string);
+	switchLib(std::string);
+	closeLib();
 public:
     SnakeGame(void);
     SnakeGame(SnakeGame const &);

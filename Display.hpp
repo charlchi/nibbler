@@ -5,7 +5,7 @@
 # include <SFML/Display.hpp>
 # include "IDisplay.hpp"
 
-
+// put these in IDisplay
 typedef IDisplay* (*st_create)(const Snake&);
 typedef void (*st_destroy)(IDisplay*);
 
