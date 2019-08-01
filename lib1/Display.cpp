@@ -33,9 +33,9 @@ void Display::tick(void) {
         if (ch == 259) snakeref.key = (5);
         if (ch == 260) snakeref.key = (6);
         if (ch == 261) snakeref.key = (7);
-        if (ch == 50) snakeref.key = (1);
-        if (ch == 51) snakeref.key = (2);
-        if (ch == 52) snakeref.key = (3);
+        if (ch == '1') snakeref.key = (1);
+        if (ch == '2') snakeref.key = (2);
+        if (ch == '3') snakeref.key = (3);
     }
 
     for (int i=0; i < snakeref.width+2; i++){
