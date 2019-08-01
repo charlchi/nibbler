@@ -1,17 +1,18 @@
 
 #include <iostream>
-#include "../IDisplay.hpp"
-#include "../SnakeGame.hpp"
+#include "IDisplay.hpp"
+#include "SnakeGame.hpp"
 #include "Display.hpp"
 
 extern "C" {
     #include <curses.h>
-    #include <unistd.h>
 }
 
 Display::Display(SnakeGame& s) : snakeref(s) {
+    setlocale(LC_ALL, "");
     initscr();
     cbreak();
+    curs_set(0);
     keypad(stdscr, TRUE);
     noecho();
     timeout(1);
@@ -22,29 +23,38 @@ Display::~Display(void) {
 }
 
 void Display::tick(void) {
-    clear();
-    unsigned    x;
-    unsigned    y;
-
     int ch;
-
+    
+    clear();
     while ((ch = getch()) != -1)
     {
-        if (ch == 112) snakeref.setKey(0);
-        if (ch == 258) snakeref.setKey(4);
-        if (ch == 259) snakeref.setKey(5);
-        if (ch == 260) snakeref.setKey(6);
-        if (ch == 261) snakeref.setKey(7);
-        if (ch == 50) snakeref.setKey(1);
-        if (ch == 51) snakeref.setKey(2);
-        if (ch == 51) snakeref.setKey(3);
+        if (ch == 112) snakeref.key = (0);
+        if (ch == 258) snakeref.key = (4);
+        if (ch == 259) snakeref.key = (5);
+        if (ch == 260) snakeref.key = (6);
+        if (ch == 261) snakeref.key = (7);
+        if (ch == 50) snakeref.key = (1);
+        if (ch == 51) snakeref.key = (2);
+        if (ch == 52) snakeref.key = (3);
     }
 
-    mvprintw(snakeref.getPy(), snakeref.getPx(), "o");
-    mvprintw(snakeref.getAy(), snakeref.getAx(), "x");
+    for (int i=0; i < snakeref.width+2; i++){
+        mvprintw(0, (i)*2, "#");
+        mvprintw(snakeref.height+1, (i)*2, "#");
+    }
+    for (int i=0; i < snakeref.height+2; i++){
+        mvprintw(i, 0, "#");
+        mvprintw(i, (snakeref.width+1)*2, "#");
+    }
+
+    for (int i=0; i < snakeref.trail; i++){
+        mvprintw(snakeref.traily[i]+1, (snakeref.trailx[i]+1)*2,
+            i % 2 ? "o" : "+");
+    }
+    mvprintw(snakeref.ay+1, (snakeref.ax+1)*2, "x");
+    mvprintw(snakeref.height + 3, 1, "Score: %d", snakeref.trail - 4);
 
     refresh();
-    usleep(500000);
 }
 
 IDisplay* createLink(SnakeGame& s) {
@@ -52,5 +62,5 @@ IDisplay* createLink(SnakeGame& s) {
 }
 
 void destroyLink(IDisplay * g) {
-    
+    (void)g;
 }

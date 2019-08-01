@@ -1,10 +1,8 @@
 
-#include <iostream>
-#include <dlfcn.h>
-
+#include "SnakeGame.hpp"
 int main(int argc, char const *argv[])
 {
 
-    SnakeGame(argc, argv);
+    new SnakeGame(argc, argv);
     return 0;
 }

@@ -1,4 +1,4 @@
-NAME = lib.so
+NAME = lib1.so
 SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
 
