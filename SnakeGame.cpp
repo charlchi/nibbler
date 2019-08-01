@@ -108,11 +108,6 @@ SnakeGame::SnakeGame(int argc, char const *argv[]) {
         trailx[0] = px;
         traily[0] = py;
 
-        // pickup apple
-        if (px == ax && py == ay) {
-            // set apple to random spot
-            // increase length
-        }
         usleep(1000000/10);
     }
     closeLib();
