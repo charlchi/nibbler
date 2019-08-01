@@ -54,9 +54,9 @@ SnakeGame::SnakeGame(int argc, char const *argv[]) {
 
     trailx = new int[1000];
     traily = new int[1000];
-    trail = 4;
-    width = 20;
-    height = 20;
+    trail = 3;
+    width = 40;
+    height = 40;
     px = 5;
     py = 5;
     ax = 2;
@@ -64,17 +64,24 @@ SnakeGame::SnakeGame(int argc, char const *argv[]) {
     dir = 0;
 
     int running = 1;
+    int wait = 0;
     while (running) {
 
          // display and get inital key input
+        key = -1;
         display->tick();
+        if (wait > 0) {
+            wait--;
+            usleep(1);
+            continue;
+        }
 
         // handle input and update game here
 
         // handle switching to new library, close previous here
-        if (key == 1)      switchLib("lib1/lib.so");
-        else if (key == 2) switchLib("lib2/lib.so");
-        else if (key == 3) switchLib("lib3/lib.so");
+        if (key == 1)      {wait = 100; switchLib("lib1/lib.so");}
+        else if (key == 2) {wait = 100; switchLib("lib2/lib.so");}
+        else if (key == 3) {wait = 100; switchLib("lib3/lib.so");}
 
         // changing direction
         if (key == 4 && dir != 1)      dir = 0;
@@ -107,7 +114,6 @@ SnakeGame::SnakeGame(int argc, char const *argv[]) {
         }
         trailx[0] = px;
         traily[0] = py;
-
         usleep(1000000/10);
     }
     closeLib();

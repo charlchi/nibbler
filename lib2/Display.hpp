@@ -3,12 +3,13 @@
 #define DISPLAY_HPP
 
 #include "IDisplay.hpp"
+#include "tigr.h"
 
 class Display : public IDisplay
 {
     SnakeGame& snakeref;
-
 public:
+    Tigr *screen;
     Display(SnakeGame& s);
     Display(void);
     Display(Display const &);
