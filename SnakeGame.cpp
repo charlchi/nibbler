@@ -87,11 +87,9 @@ SnakeGame::SnakeGame(int argc, char const *argv[]) {
         else if (dir == 3) { px++;}
 
         // game over, exit
-        if (key == 0) break;
-        if (px < 0 || px >= width)
-            running = 0;
-        if (py < 0 || py >= height)
-            running = 0;
+        if (key == 0) running = 0;
+        if (px < 0 || px >= width) running = 0;
+        if (py < 0 || py >= height) running = 0;
 
         // trail and apple pickup
         for (int i=trail; i>0; i--) {
