@@ -52,16 +52,21 @@ SnakeGame::SnakeGame(int argc, char const *argv[]) {
     loadLib("lib1/lib.so");
     //loadLib(lib1);
 
-    trailx = new int[1000];
-    traily = new int[1000];
-    trail = 3;
-    width = 40;
-    height = 40;
+    width = 30;
+    height = 30;
     px = 5;
     py = 5;
     ax = 2;
     ay = 2;
     dir = 0;
+    trailx = new int[1000];
+    traily = new int[1000];
+    trailx[0] = px;traily[0] = py;
+    trailx[1] = px;traily[1] = py;
+    trailx[2] = px;traily[2] = py;
+    trailx[3] = px;traily[3] = py;
+    trailx[4] = px;traily[4] = py;
+    trail = 4;
 
     int running = 1;
     int wait = 0;
@@ -75,8 +80,6 @@ SnakeGame::SnakeGame(int argc, char const *argv[]) {
             usleep(1);
             continue;
         }
-
-        // handle input and update game here
 
         // handle switching to new library, close previous here
         if (key == 1)      {wait = 100; switchLib("lib1/lib.so");}
@@ -99,7 +102,7 @@ SnakeGame::SnakeGame(int argc, char const *argv[]) {
         if (py < 0 || py >= height) running = 0;
 
         // trail and apple pickup
-        for (int i=trail; i>0; i--) {
+        for (int i=trail-1; i>0; i--) {
             trailx[i] = trailx[i - 1];
             traily[i] = traily[i - 1];
             if (trailx[i] == ax && traily[i] == ay) {

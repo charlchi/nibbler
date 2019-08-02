@@ -16,6 +16,11 @@ Display::Display(SnakeGame& s) : snakeref(s) {
     keypad(stdscr, TRUE);
     noecho();
     timeout(1);
+    start_color();
+    init_pair(1, COLOR_YELLOW, COLOR_GREEN);
+    init_pair(2, COLOR_CYAN, COLOR_BLUE);
+    init_pair(3, COLOR_BLACK, COLOR_WHITE);
+    init_pair(4, COLOR_RED, COLOR_MAGENTA);
 }
 
 Display::~Display(void) {
@@ -38,6 +43,8 @@ void Display::tick(void) {
         if (ch == '3') snakeref.key = (3);
     }
 
+    attron(A_BOLD);
+
     for (int i=0; i < snakeref.width+2; i++){
         mvprintw(0, (i)*2, "#");
         mvprintw(snakeref.height+1, (i)*2, "#");
@@ -47,12 +54,22 @@ void Display::tick(void) {
         mvprintw(i, (snakeref.width+1)*2, "#");
     }
 
+    attron(COLOR_PAIR(2));
     for (int i=0; i < snakeref.trail; i++){
         mvprintw(snakeref.traily[i]+1, (snakeref.trailx[i]+1)*2,
             i % 2 ? "o" : "+");
     }
+    attroff(COLOR_PAIR(2));
+
+    attron(COLOR_PAIR(1));
+
     mvprintw(snakeref.ay+1, (snakeref.ax+1)*2, "x");
+    
+    attroff(COLOR_PAIR(1));
+
     mvprintw(snakeref.height + 3, 1, "Score: %d", snakeref.trail - 4);
+
+    attroff(A_BOLD);
 
     refresh();
 }
@@ -62,5 +79,6 @@ IDisplay* createLink(SnakeGame& s) {
 }
 
 void destroyLink(IDisplay * g) {
+    endwin();
     (void)g;
 }

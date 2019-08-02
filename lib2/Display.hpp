@@ -2,14 +2,15 @@
 #ifndef DISPLAY_HPP
 #define DISPLAY_HPP
 
+#include "GLFW/glfw3.h"
 #include "IDisplay.hpp"
-#include "tigr.h"
+
 
 class Display : public IDisplay
 {
     SnakeGame& snakeref;
 public:
-    Tigr *screen;
+    GLFWwindow* window;
     Display(SnakeGame& s);
     Display(void);
     Display(Display const &);

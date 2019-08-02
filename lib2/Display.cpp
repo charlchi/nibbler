@@ -1,60 +1,74 @@
 
 #include <iostream>
+#include "GLFW/glfw3.h"
 #include "IDisplay.hpp"
 #include "SnakeGame.hpp"
 #include "Display.hpp"
-#define GL_SILENCE_DEPRECATION
 
-extern "C" {
-    #include "tigr.h"
+static void error_callback(int error, const char* description)
+{
+    fprintf(stderr, "Error: %s\n", description);
+}
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
 Display::Display(SnakeGame& s) : snakeref(s) {
-    screen = tigrWindow((snakeref.width+2) * 10, (snakeref.height+5) * 10, "Hello", 0);
+    if (!glfwInit()) {}
+    window = glfwCreateWindow(
+        snakeref.width*10,
+        snakeref.height*10,
+        "SNAKE", NULL, NULL);
+    if (!window) {}
+    glfwSetErrorCallback(error_callback);
+    glfwMakeContextCurrent(window);
+    glfwSetKeyCallback(window, key_callback);
+    glfwSwapInterval(1);
 }
 
 Display::~Display(void) {
-    tigrFree(screen);
+
+}
+
+void drawBox(int x, int y, int width, int height) {
+    glBegin(GL_POLYGON);//start drawing a line loop
+    float x1 = (((float)x / (float)width/2.0f) * 2.0f) - 1.0f;
+    float y1 = (((float)y / (float)height/2.0f) * 2.0f) - 1.0f;
+    float hw = ((2.0f / (float)width/2.0f));
+    float hh = ((2.0f / (float)height/2.0f));
+    glVertex2f( x1, y1 );//left of window
+    glVertex2f( x1+hw, y1 );//bottom of window
+    glVertex2f( x1+hw, y1+hh );//right of window
+    glVertex2f( x1, y1+hh );//top of window
+    glEnd();//end drawing of line loop
 }
 
 void Display::tick(void) {
 
-    // input
-    if (tigrKeyDown(screen, TK_LEFT)) snakeref.key = 6;
-    if (tigrKeyDown(screen, TK_UP)) snakeref.key = 5;
-    if (tigrKeyDown(screen, TK_RIGHT)) snakeref.key = 7;
-    if (tigrKeyDown(screen, TK_DOWN)) snakeref.key = 4;
-    if (tigrKeyDown(screen, '1')) snakeref.key = 1;
-    if (tigrKeyDown(screen, '2')) snakeref.key = 2;
-    if (tigrKeyDown(screen, '3')) snakeref.key = 3;
+    int width = (snakeref.width) * 10;
+    int height = (snakeref.height) * 10;
+    glfwGetFramebufferSize(window, &width, &height);
+    glViewport(0, 0, width, height);
+    glClear(GL_COLOR_BUFFER_BIT);
 
-    // display
-    tigrClear(screen, tigrRGB(0x00, 0x00, 0x00));
+    glColor3f( 1.0f, 1.0f, 1.0f );
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
-    for (int i=0; i < snakeref.width+2; i++){
-        tigrPrint(screen, tfont, 0, (i)*10,
-            tigrRGB(0xff, 0xff, 0xff), "#");
-        tigrPrint(screen, tfont, (snakeref.height+1)*10, (i)*10,
-            tigrRGB(0xff, 0xff, 0xff), "#");
+    for (int i=0; i < snakeref.width+2; i++) {
+        drawBox(i, 0, snakeref.width+2, snakeref.height+2);
+        drawBox(i, snakeref.height+2, snakeref.width, snakeref.height+2);
     }
-    for (int i=0; i < snakeref.height+2; i++){
-        tigrPrint(screen, tfont, i*10, 0,
-            tigrRGB(0xff, 0xff, 0xff), "#");
-        tigrPrint(screen, tfont, i*10, (snakeref.width+1)*10,
-            tigrRGB(0xff, 0xff, 0xff), "#");
+    for (int i=0; i < snakeref.height+2; i++) {
+        drawBox(0,i, snakeref.width+2, snakeref.height+2);
+        drawBox(snakeref.width+2,i, snakeref.width+2, snakeref.height+2);
     }
 
-    for (int i=0; i < snakeref.trail; i++){
-        tigrPrint(screen, tfont, (snakeref.traily[i]+1)*10, (snakeref.trailx[i]+1)*10,
-            tigrRGB(0x00, 0x00, 0xff),
-            i % 2 ? "o" : "+");
-    }
-    tigrPrint(screen, tfont, (snakeref.ay+1)*10, (snakeref.ax+1)*10,
-        tigrRGB(0x00, 0xff, 0x00), "x");
-    tigrPrint(screen, tfont, (snakeref.height+3)*10, 1*10, 
-        tigrRGB(0xff, 0xff, 0xff), "Score: ");
+    glfwSwapBuffers(window);
+    glfwPollEvents();
 
-    tigrUpdate(screen);
 }
 
 IDisplay* createLink(SnakeGame& s) {
@@ -62,8 +76,8 @@ IDisplay* createLink(SnakeGame& s) {
 }
 
 void destroyLink(IDisplay * g) {
-    Display* current = (Display*) g;
-    //tigrError(current->screen, "test");
-    tigrFree(current->screen);
+    Display* ctx = (Display*)g;
+    glfwDestroyWindow(ctx->window);
+    glfwTerminate();
     (void)g;
 }

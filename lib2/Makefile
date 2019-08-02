@@ -3,11 +3,11 @@ SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
 
 CPP = clang++
-CPPFLAGS ?= -Wall -Wextra -Werror -std=c++11 -Wno-missing-braces
-CPPFLAGS += -Wno-deprecated-declarations -Wno-c++11-narrowing
-CPPFLAGS += -Wno-unused-parameter -Wno-char-subscripts
-CPPFLAGS += -I../include -Itigr.h
-LDFLAGS = -shared -fPIC -framework OpenGL -framework Cocoa
+CFLAGS = -Wall -Wextra -Werror -std=c++11 -Wno-missing-braces
+CFLAGS += -Wno-deprecated-declarations -Wno-c++11-narrowing
+CFLAGS += -Wno-unused-parameter -Wno-char-subscripts
+CFLAGS += -I../include -Iinclude
+LDFLAGS = -shared -fPIC libglfw3.a -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
 
 all: $(NAME)
 
@@ -17,7 +17,7 @@ $(NAME): $(OBJ)
 re: fclean all
 
 %.o: %.cpp
-	$(CPP) $(CPPFLAGS) -o $@ -c $<
+	$(CPP) $(CFLAGS) -o $@ -c $<
 
 clean:
 	rm -rf $(OBJ)
