@@ -103,13 +103,15 @@ SnakeGame::SnakeGame(int argc, char const *argv[]) {
 
         // trail and apple pickup
         for (int i=trail-1; i>0; i--) {
-            trailx[i] = trailx[i - 1];
-            traily[i] = traily[i - 1];
             if (trailx[i] == ax && traily[i] == ay) {
                 ax = rand() % width;
                 ay = rand() % height;
                 trail++;
             }
+        }
+        for (int i=trail-1; i>0; i--) {
+            trailx[i] = trailx[i - 1];
+            traily[i] = traily[i - 1];
             if (trailx[i] == px && traily[i] == py) {
                 running = 0;
             }
