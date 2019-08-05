@@ -14,8 +14,6 @@ static void error_callback(int error, const char* description)
 
 void Display::handleInput(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
     if (action == GLFW_PRESS) {
         if (key == GLFW_KEY_ESCAPE) Display::inputKey = (0);
         if (key == GLFW_KEY_UP) Display::inputKey = (4);
@@ -62,6 +60,9 @@ void drawBox(int x, int y, int width, int height) {
 
 void Display::tick(void) {
 
+    glfwPollEvents();
+    snakeref.key = Display::inputKey;
+
     int width = (snakeref.width+5) * 10;
     int height = (snakeref.height+5) * 10;
     glfwGetFramebufferSize(window, &width, &height);
@@ -70,7 +71,7 @@ void Display::tick(void) {
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glPointSize(14.0f);
+    glPointSize(25.0f);
     glColor3f( 1.0f, 1.0f, 1.0f );
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
@@ -95,11 +96,7 @@ void Display::tick(void) {
     drawBox((snakeref.ax+1), snakeref.ay+1,
             snakeref.width+2, snakeref.height+2);
 
-    snakeref.key = Display::inputKey;
-
     glfwSwapBuffers(window);
-    glfwPollEvents();
-
 }
 
 IDisplay* createLink(SnakeGame& s) {
@@ -108,7 +105,9 @@ IDisplay* createLink(SnakeGame& s) {
 
 void destroyLink(IDisplay * g) {
     Display* ctx = (Display*)g;
+    glfwSetWindowShouldClose(ctx->window, GLFW_TRUE);
     glfwDestroyWindow(ctx->window);
     glfwTerminate();
-    (void)g;
+    delete g;
+    //(void)g;
 }
